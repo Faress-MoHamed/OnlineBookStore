@@ -65,8 +65,8 @@ export default function LatestArticles() {
 							</div>
 						</div>
 						<div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-							{articles.map((article) => (
-								<ArticleCard key={article.source.id} article={article} />
+							{articles.map((article, idx) => (
+								<ArticleCard key={idx} article={article} />
 							))}
 						</div>
 						<div className="mt-4 text-center">
