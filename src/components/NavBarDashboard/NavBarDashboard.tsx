@@ -1,43 +1,27 @@
 import { motion, AnimatePresence } from "framer-motion";
-
-import { LogOut, Menu, ShoppingBag, User, X } from "lucide-react";
-import { NavBarLinksType } from "./Navbar.types";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 import React, { useState } from "react";
-import logo from "../../assets/image1.jpeg";
-import { useAuth } from "../../context/AuthProvider";
-import { jwtDecode, JwtPayload } from "jwt-decode";
-import { HandleLogout } from "../../utils/HandleLogout";
+import type { NavBarLinksType } from "../NavBar/Navbar.types";
+import { Link, NavLink } from "react-router-dom";
 import useMobileHandler from "../../hooks/useMobileHandler";
-export default function NavBar() {
+import { useAuth } from "../../context/AuthProvider";
+import logo from "../../assets/image1.jpeg";
+
+export default function NavBarDashboard() {
 	const [open, setOpen] = useState(false);
 	const { isMobile } = useMobileHandler();
-	const { auth, setAuth } = useAuth();
-	const navigate = useNavigate();
-	const location = useLocation();
-
-	const token = localStorage.getItem("token");
-	const decodedToken = token ? jwtDecode<JwtPayload>(token) : null;
+	const { auth } = useAuth();
 
 	const NavBarLinks: NavBarLinksType[] = [
 		{
-			path: "/",
-			name: "Home",
+			path: "/dashboard/",
+			name: "Books",
 		},
 		{
-			path: "/books",
-			name: "books",
-		},
-		{
-			path: "/contactUs",
-			name: "Contact Us",
-		},
-		{
-			path: "/profile",
-			name: "Profile",
+			path: "/dashboard/category",
+			name: "categories",
 		},
 	];
-
 	return (
 		<nav className="bg-white md:py-4 md:px-6 px-3 py-2 flex justify-between items-center shadow-md">
 			<div className="flex items-center gap-3">
@@ -53,6 +37,16 @@ export default function NavBar() {
 				</Link>
 			</div>
 			<ul className="hidden md:flex space-x-6">
+				{auth?.profile.role === "Admin" && (
+					<>
+						<li
+							className={`lg:text-[15px] md:text-[10px] font-[500] uppercase hover:text-[#ED553B] transition-colors duration-200 `}
+						>
+							<Link to={"/"}>{"Home"}</Link>
+						</li>
+						<div className="w-[2px] h-[20px] border-r-[2px] border-[#D1D1D1]"></div>
+					</>
+				)}
 				{NavBarLinks.map((link, index) => (
 					<React.Fragment key={index}>
 						<li
@@ -67,47 +61,8 @@ export default function NavBar() {
 						)}
 					</React.Fragment>
 				))}
-				{auth?.profile.role === "Admin" && (
-					<>
-						<div className="w-[2px] h-[20px] border-r-[2px] border-[#D1D1D1]"></div>
-						<li
-							className={`${
-								location.pathname.includes("/dashboard") ? "text-[#ED553B]" : ""
-							} lg:text-[15px] md:text-[10px] font-[500] uppercase hover:text-[#ED553B] transition-colors duration-200 `}
-						>
-							<Link to={"/dashboard"}>{"dashboard"}</Link>
-						</li>
-					</>
-				)}
 			</ul>
 			<div className="flex space-x-4">
-				<Link
-					to={"/profile"}
-					className="hover:text-[#ED553B] transition-colors duration-200"
-				>
-					<User className="lg:w-[22px] w-[15px]" />
-				</Link>
-				{auth?.profile.role !== "Admin" && (
-					<Link
-						to={"/checkout"}
-						className="hover:text-[#ED553B] transition-colors duration-200"
-					>
-						<ShoppingBag className="lg:w-[22px] w-[15px]" />
-					</Link>
-				)}
-
-				{decodedToken && (
-					<button
-						onClick={() => {
-							HandleLogout();
-							setAuth(null);
-							navigate("/auth");
-						}}
-					>
-						<LogOut className="lg:w-[22px] w-[15px]" />
-					</button>
-				)}
-
 				{isMobile && (
 					<button
 						onClick={() => {

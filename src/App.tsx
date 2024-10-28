@@ -7,6 +7,14 @@ import AuthForm from "./pages/AuthForm";
 import SendOtp from "./pages/SendOtp";
 import ForgetPassword from "./pages/ForgetPassword";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import Books from "./pages/Books";
+import DashboardLayout from "./pages/DashboardLayout";
+import RoleProtected from "./pages/RoleProtected";
+import BookList from "./pages/dashboard/Dashboard-Book/BookList";
+import CategotyListDashboard from "./pages/dashboard/Dashboard-Category/CategotyListDashboard";
+import ProfilePage from "./pages/Profile";
+import CheckoutPage from "./pages/CheckoutPage/CheckOutPage";
+import ContactUs from "./pages/ContactsUs";
 
 function App() {
 	// const [user, setUser] = useState<string | null>(null);
@@ -27,6 +35,42 @@ function App() {
 				{
 					path: "/about",
 					element: <About />,
+				},
+				{
+					path: "/books",
+					element: <Books />,
+				},
+				{
+					path: "/contactUs",
+					element: <ContactUs />,
+				},
+				{
+					path: "/profile",
+					element: <ProfilePage />,
+				},
+				{
+					path: "/checkout",
+					element: <CheckoutPage />,
+				},
+			],
+		},
+		{
+			path: "/dashboard",
+			element: (
+				<ProtectedRoute>
+					<RoleProtected>
+						<DashboardLayout />
+					</RoleProtected>
+				</ProtectedRoute>
+			),
+			children: [
+				{
+					index: true,
+					element: <BookList />,
+				},
+				{
+					path: "/dashboard/category",
+					element: <CategotyListDashboard />,
 				},
 			],
 		},

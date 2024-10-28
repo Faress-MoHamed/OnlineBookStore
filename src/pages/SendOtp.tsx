@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import logo from "../assets/Logo.png";
 import { useMutation } from "@tanstack/react-query";
 import { ForgetPassword } from "../Api/Customer/Auth";
+import { useNavigate } from "react-router-dom";
 
 const registerSchema = Yup.object().shape({
 	email: Yup.string().email("Invalid email").required("Required"),
@@ -17,6 +18,7 @@ interface ForgetPasswordVariables {
 	email: string;
 }
 export default function SendOtp() {
+	const navigate = useNavigate();
 	const { mutateAsync: SendOtpFunction, isPending: ForgetPasswordPending } =
 		useMutation<
 			ForgetPasswordResponse, // Return type
@@ -27,6 +29,9 @@ export default function SendOtp() {
 			mutationFn: async (data: ForgetPasswordVariables) => {
 				const res = await ForgetPassword(data);
 				return res;
+			},
+			onSuccess: () => {
+				navigate("/auth/forget-password");
 			},
 		});
 

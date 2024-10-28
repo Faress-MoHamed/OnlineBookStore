@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import type { Slides } from "./Slides.types";
 import { Oval } from "react-loader-spinner";
 import toast from "react-hot-toast";
+import NotFound from "../ui/NotFound";
 
 export default function Hero() {
 	const [slides, setSlides] = useState<Slides[]>([]);
@@ -52,6 +53,8 @@ export default function Hero() {
 						wrapperClass=""
 					/>
 				</div>
+			) : slides.length === 0 ? (
+				<NotFound>slides</NotFound>
 			) : (
 				<div className="relative bg-gradient-to-r from-[#fbe4e4] to-white">
 					<Swiper

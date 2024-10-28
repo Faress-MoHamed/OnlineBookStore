@@ -161,7 +161,7 @@ export default function AuthForm() {
 				refreshToken: res.data.refreshToken,
 				profile: res.data.profile,
 			});
-			console.log(res)
+			console.log(res);
 			return res;
 		},
 		onSuccess: (data) => {
@@ -183,7 +183,7 @@ export default function AuthForm() {
 			},
 			onSuccess: (data) => {
 				toast.success(data.message || "Registered Succeessfully");
-				navigate("/auth");
+				setIsLogin(true);
 			},
 		});
 
