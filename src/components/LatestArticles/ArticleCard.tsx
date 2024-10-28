@@ -8,7 +8,7 @@ export default function ArticleCard({ article }: { article: Article }) {
 			<div className="flex-shrink-0">
 				<img
 					className="h-48 w-full max-h-full object-fill"
-					src={article.urlToImage}
+					src={article.image}
 					alt={article.title}
 					width={400}
 					

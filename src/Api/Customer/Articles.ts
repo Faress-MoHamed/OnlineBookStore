@@ -2,11 +2,11 @@ import axios from "axios";
 {
 	/**https://newsapi.org/docs */
 }
-const API_KEY = "7239b7d3b5d341f6a8021bee9f952440";
+const API_KEY = "c240c61c99746139729b77cccb3f9a66";
 export const AllArticles = async () => {
 	try {
 		const { data } = await axios.get(
-			`https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}`
+			`https://gnews.io/api/v4/search?q=example&lang=en&country=us&max=10&apikey=${API_KEY}`
 		);
 		return data.articles;
 	} catch (error) {

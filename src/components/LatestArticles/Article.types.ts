@@ -1,11 +1,11 @@
 export interface Article {
 	source: {
-		id: string;
+		url: string;
 		name: string;
 	};
 	publishedAt: string;
 	title: string;
-	urlToImage: string;
+	image: string;
 	url: string;
 }
 
