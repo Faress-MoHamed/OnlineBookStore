@@ -8,7 +8,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
 	const { auth, loading, setAuth } = useAuth();
 	const location = useLocation();
 	const [isValid, setIsValid] = useState(false);
-
+	// console.log(jwtDecode<JwtPayload>(auth?.accessToken));
 	useEffect(() => {
 		const validateToken = async () => {
 			if (loading) return;

@@ -1,18 +1,32 @@
 import { Grid, List } from "lucide-react";
-import { useState } from "react";
 import type { SortOption, ViewMode } from "./ControlBar.types";
 
 export default function ControlBar({
 	setSortBy,
+	itemsPerPage,
+	setItemsPerPage,
+	viewMode,
+	setViewMode,
+	total,
+	page,
 }: {
 	setSortBy: React.Dispatch<React.SetStateAction<SortOption>>;
+	itemsPerPage: number;
+	setItemsPerPage: React.Dispatch<React.SetStateAction<number>>;
+	viewMode: ViewMode;
+	setViewMode: React.Dispatch<React.SetStateAction<ViewMode>>;
+	total: number;
+	page: number;
 }) {
-	// Control bar state
-	const [itemsPerPage, setItemsPerPage] = useState<number>(12);
-	const [viewMode, setViewMode] = useState<ViewMode>("grid");
+	const showOptions = [{ value: 5 }, { value: 10 }];
 
+	const to = page * itemsPerPage > total ? total : page * itemsPerPage;
+	const from =
+		page * itemsPerPage - itemsPerPage === 0
+			? 1
+			: page * itemsPerPage - itemsPerPage;
 	return (
-		<div className="w-full">
+		<div className="w-full md:mt-0 mt-10">
 			{" "}
 			<div className="flex flex-row flex-wrap justify-between items-center mb-6 gap-4 w-full text-[#393280] font-[600]">
 				<div className="flex items-center gap-4">
@@ -31,7 +45,9 @@ export default function ControlBar({
 						</select>
 					</div>
 				</div>
-				<span className="text-gray-600">Showing 1 - 12 of 26 result</span>
+				<span className="text-gray-600">
+					Showing {from} - {to} of {total} result
+				</span>
 				<div className="flex items-center">
 					<span className="mr-2">Show:</span>
 					<select
@@ -39,9 +55,11 @@ export default function ControlBar({
 						onChange={(e) => setItemsPerPage(Number(e.target.value))}
 						className="focus:outline-none text-main"
 					>
-						<option value={12}>12</option>
-						<option value={24}>24</option>
-						<option value={36}>36</option>
+						{showOptions.map((el) => (
+							<option key={el.value} value={el.value}>
+								{el.value}
+							</option>
+						))}
 					</select>
 				</div>
 				<div className="flex items-center gap-4 order-3">

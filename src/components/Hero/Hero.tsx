@@ -15,9 +15,15 @@ import type { Slides } from "./Slides.types";
 import { Oval } from "react-loader-spinner";
 import toast from "react-hot-toast";
 import NotFound from "../ui/NotFound";
+// import Images from "../../assets/books/ImportImages";
+// import { getRndInteger } from "../../utils/RandomNumber";
 
 export default function Hero() {
 	const [slides, setSlides] = useState<Slides[]>([]);
+	// console.log(Images);
+	// const res = getRndInteger(1, 5);
+	// console.log(Images);
+
 	const { isMobile } = useMobileHandler() || {}; // Add fallback to an empty object
 	const { data, isLoading, isSuccess, isError, error } = useQuery({
 		queryKey: ["slides"],

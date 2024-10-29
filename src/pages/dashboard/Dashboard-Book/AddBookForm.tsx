@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useFormik } from "formik";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
@@ -13,17 +12,31 @@ interface BookFormData {
 	description: string;
 	author: string;
 	price: string;
-	image: File | null;
+	// image: File | null;
+	image: string;
 	category: string;
 }
-interface BookFormResponse {
-	_id: string;
-	name: string;
-	description: string;
-	author: string;
-	price: string;
-	image: File | null;
-	category: string;
+
+{
+	/**  */
+}
+interface NewBookResponse {
+	code: number;
+	message: string;
+	status: string;
+	timestamp: string;
+	data: {
+		author: string;
+		category: string;
+		createdAt: string;
+		description: string;
+		id: string;
+		_v: string;
+		name: string;
+		price: number;
+		image: string;
+		status: string;
+	};
 }
 
 interface AddBookFormProps {
@@ -38,16 +51,17 @@ const BookValidate = Yup.object().shape({
 	price: Yup.string()
 		.min(0, "the min price is 0")
 		.required("Price is required"),
-	image: Yup.mixed()
-		.required("Image is required")
-		.test("fileSize", "File size is too large", (value: any) => {
-			return value && value.size <= 10000000; // 10MB limit
-		})
-		.test("fileType", "Unsupported File Format", (value: any) => {
-			return (
-				value && ["image/jpeg", "image/png", "image/gif"].includes(value.type)
-			);
-		}),
+	// image: Yup.mixed()
+	// 	.required("Image is required")
+	// 	.test("fileSize", "File size is too large", (value: any) => {
+	// 		return value && value.size <= 10000000; // 10MB limit
+	// 	})
+	// 	.test("fileType", "Unsupported File Format", (value: any) => {
+	// 		return (
+	// 			value && ["image/jpeg", "image/png", "image/gif"].includes(value.type)
+	// 		);
+	// 	}),
+	image: Yup.string().required("Image is required"),
 });
 const AddBookForm: React.FC<AddBookFormProps> = ({ formData, setFormData }) => {
 	const queryClient = useQueryClient();
@@ -57,30 +71,29 @@ const AddBookForm: React.FC<AddBookFormProps> = ({ formData, setFormData }) => {
 	>([]);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const { mutate: addBook } = useMutation<
-		BookFormResponse,
-		Error,
-		BookFormData
-	>({
-		mutationKey: ["books", "newBook"],
-		mutationFn: async (data: BookFormData) => {
-			try {
-				const res = await CreateBook(data);
-				return res;
-			} catch (error) {
-				toast.error("Error in adding book");
-				throw error;
-			}
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["books"] }); // Make sure to specify the correct query key
-			resetForm();
-			setIsLoading(false);
-		},
-		onMutate: () => {
-			setIsLoading(true);
-		},
-	});
+	const { mutate: addBook } = useMutation<NewBookResponse, Error, BookFormData>(
+		{
+			mutationKey: ["books", "newBook"],
+			mutationFn: async (data: BookFormData) => {
+				try {
+					const res = await CreateBook(data);
+					return res;
+				} catch (error) {
+					toast.error("Error in adding book");
+					throw error;
+				}
+			},
+			onSuccess: (data) => {
+				queryClient.invalidateQueries({ queryKey: ["books"] });
+				resetForm();
+				toast.success(data.message);
+				setIsLoading(false);
+			},
+			onMutate: () => {
+				setIsLoading(true);
+			},
+		}
+	);
 
 	const resetForm = () => {
 		formik.resetForm();
@@ -132,11 +145,11 @@ const AddBookForm: React.FC<AddBookFormProps> = ({ formData, setFormData }) => {
 		}
 	}, [fetchedCategories, isError, error]);
 
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files && e.target.files[0]) {
-			formik.setFieldValue("image", e.target.files[0]);
-		}
-	};
+	// const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	// 	if (e.target.files && e.target.files[0]) {
+	// 		formik.setFieldValue("image", e.target.files[0]);
+	// 	}
+	// };
 
 	// Update formData state whenever formik values change
 	useEffect(() => {
@@ -222,10 +235,8 @@ const AddBookForm: React.FC<AddBookFormProps> = ({ formData, setFormData }) => {
 						</div>
 					) : null}
 					<input
-						type="file"
-						ref={fileInputRef}
-						onChange={handleFileChange}
-						name="image"
+						type="text"
+						{...formik.getFieldProps("image")}
 						className="p-4 border-2 border-gray-300 rounded-lg bg-gray-100 text-gray-600 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-main transition-all"
 					/>
 					{formik.touched.image && formik.errors.image ? (

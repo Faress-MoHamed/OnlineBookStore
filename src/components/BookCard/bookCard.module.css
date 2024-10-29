@@ -25,6 +25,9 @@
 	color: white;
 	transition: 0.3s;
 }
+.bookCard:hover .overlay{
+	top: 0;
+}
 
 .bookCard:hover .bookCardbtn {
 	bottom: 0;

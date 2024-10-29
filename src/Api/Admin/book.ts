@@ -6,17 +6,17 @@ interface BookFormData {
 	description: string;
 	author: string;
 	price: string;
-	image: File | null;
+	// image: File | null;
+	image: string;
 	category: string;
 }
-
 
 export const CreateBook = async (FormData: BookFormData) => {
 	try {
 		const { data } = await AxiosInstance.post("/api/book", FormData);
 		return data;
 	} catch (error: any) {
-		error.response.data.message.map((el:string) => {
+		error.response.data.message.map((el: string) => {
 			toast.error(el);
 		});
 	}

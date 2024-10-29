@@ -11,7 +11,8 @@ interface BookFormData {
 	description: string;
 	author: string;
 	price: string;
-	image: File | null;
+	// image: File | null;
+	image: string;
 	category: string;
 }
 
@@ -31,7 +32,7 @@ const BookList = () => {
 		description: "",
 		author: "",
 		price: "",
-		image: null,
+		image: "",
 		category: "",
 	});
 
@@ -75,7 +76,7 @@ const BookList = () => {
 				) : products.length === 0 ? (
 					<p>No products to display</p>
 				) : (
-					products.map((product) => (
+					products?.map((product) => (
 						<CardsDashboard
 							key={product._id}
 							product={product}

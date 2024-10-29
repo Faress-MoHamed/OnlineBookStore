@@ -9,7 +9,8 @@ interface BookFormData {
 	description: string;
 	author: string;
 	price: string;
-	image: File | null;
+	// image: File | null;
+	image: string;
 	category: string;
 }
 
@@ -63,7 +64,7 @@ function CardsDashboard({
 			description: "",
 			author: "",
 			price: "",
-			image: null,
+			image: "",
 			category: "",
 		});
 	};

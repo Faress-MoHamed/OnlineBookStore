@@ -72,7 +72,7 @@ export const ForgetPassword = async (formData: { email: string }) => {
 		throw error;
 	}
 };
-export const ChangePassword = async (formData: {
+export const ChangeOldPassword = async (formData: {
 	password: string;
 	newPassword: string;
 }) => {

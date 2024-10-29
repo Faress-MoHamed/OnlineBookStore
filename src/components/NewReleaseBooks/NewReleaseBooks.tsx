@@ -6,6 +6,7 @@ import { Pagination } from "swiper/modules";
 import styles from "../Hero/pagination.module.css";
 import "../Hero/SwiperPagination.css";
 import { BookCard } from "../BookCard/BookCard";
+import { Link } from "react-router-dom";
 
 const books = [
 	{
@@ -95,7 +96,10 @@ export default function NewReleaseBooks() {
 					className="mb-8"
 				>
 					{books.map((book, index) => (
-						<SwiperSlide className="flex justify-center items-center" key={index}>
+						<SwiperSlide
+							className="flex justify-center items-center"
+							key={index}
+						>
 							<BookCard {...book} />
 						</SwiperSlide>
 					))}
@@ -104,13 +108,13 @@ export default function NewReleaseBooks() {
 						<div className="w-full text-center">
 							<div className="swiper-pagination relative"></div>
 						</div>
-						<a
-							href="#"
+						<Link
+							to={"/books"}
 							className="inline-flex items-center text-[#393280] hover:underline md:absolute md:right-0"
 						>
 							View All Products
 							<ChevronRight className="ml-1 h-4 w-4" />
-						</a>
+						</Link>
 					</div>
 				</Swiper>
 			</div>

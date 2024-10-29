@@ -175,6 +175,28 @@ export default function NavBar() {
 											</motion.li>
 										);
 									})}
+									{auth?.profile.role === "Admin" && (
+										<>
+											<motion.li
+												initial={{ opacity: 0, x: 100 }}
+												animate={{ opacity: 1, x: 0 }}
+												transition={{
+													delay: 0.2 * NavBarLinks.length,
+													ease: [0.17, 0.55, 0.55, 1],
+												}}
+												className={`relative  text-lg before:absolute before:bottom-[-5px] before:left-0 before:h-[3px] before:w-0 before:bg-slate-950 before:transition-all before:duration-300 hover:before:w-full $`}
+											>
+												<NavLink
+													to={"/dashboard"}
+													onClick={() => {
+														setOpen(false);
+													}}
+												>
+													{"dashboard"}
+												</NavLink>
+											</motion.li>
+										</>
+									)}
 								</ul>
 							</motion.div>
 						</>

@@ -1,15 +1,24 @@
 import useMobileHandler from "../../hooks/useMobileHandler";
 import ButtonMore from "../ButtonMore/ButtonMore";
-import book1 from "../../assets/book1.png";
+// import book1 from "../../assets/book1.png";
+import Images from "../../assets/books/ImportImages";
+import { getRndInteger } from "../../utils/RandomNumber";
 
 interface propsType {
 	title: string;
 	description: string;
-	image: string;
+	image?: string;
 	alt: string;
 }
 
-export default function SlideComponent({ alt, description, image = book1, title }: propsType) {
+export default function SlideComponent({
+	alt,
+	description,
+	// image = book1,
+	title,
+}: propsType) {
+	const randomNumber = getRndInteger(0, Images.length);
+
 	const { isMobile } = useMobileHandler();
 
 	return (
@@ -29,7 +38,7 @@ export default function SlideComponent({ alt, description, image = book1, title 
 						<div className="relative w-2/4 h-full ">
 							<img
 								className="object-cover absolute right-0 top-0 h-full max-w-full"
-								src={image}
+								src={Images[randomNumber]}
 								alt={alt}
 							/>
 						</div>

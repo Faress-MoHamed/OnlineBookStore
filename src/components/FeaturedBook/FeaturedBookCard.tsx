@@ -1,23 +1,30 @@
-import image1 from "../../assets/book2.png";
+import { Link } from "react-router-dom";
+import Images from "../../assets/books/ImportImages";
+import { getRndInteger } from "../../utils/RandomNumber";
+
+// import image1 from "../../assets/book2.png";
 export default function FeaturedBookCard({
 	title = "Birds gonna be happy",
 	author = "Timbur hood",
 	price = 45,
-	imageUrl = image1,
+	// imageUrl = image1,
 }) {
+	const RandomImage = getRndInteger(0, Images.length);
 	return (
 		<div className="flex md:flex-row flex-col items-center justify-between gap-10 font-Inter md:h-[90vh]  w-[90%] P-8">
 			{/**image side */}
-			<div className="h-full w-2/4 py-3 bg-white md:block hidden">
+			<div className="h-full w-[450px] py-3 bg-white md:block hidden">
 				<img
-					src={imageUrl}
+					src={Images[RandomImage]}
 					alt="book"
 					className="w-[100%] max-h-full object-cover"
 				/>
 			</div>
 			{/**content side */}
 			<div className="flex flex-col gap-7  py-16 md:px-10 px-5 h-full md:w-2/4">
-				<h2 className="font-semibold md:text-[50px] text-3xl text-main">Featured Book</h2>
+				<h2 className="font-semibold md:text-[50px] text-3xl text-main">
+					Featured Book
+				</h2>
 				{/**author */}
 				<div className="px-4 uppercase">
 					<div className="w-20 h-[2px] bg-[#ED553B]"></div>
@@ -42,7 +49,10 @@ export default function FeaturedBookCard({
 				</div>
 
 				{/**button view more */}
-				<button className="inline-flex items-center border border-[#C0C0C0]  px-12 py-3 text-base font-medium text-main  hover:bg-main hover:text-white duration-300 max-w-fit rounded-[4px] mt-12">
+				<Link
+					to={"/books"}
+					className="inline-flex items-center border border-[#C0C0C0]  px-12 py-3 text-base font-medium text-main  hover:bg-main hover:text-white duration-300 max-w-fit rounded-[4px] mt-12"
+				>
 					View more
 					<svg
 						className="ml-2 -mr-1 h-5 w-5"
@@ -57,7 +67,7 @@ export default function FeaturedBookCard({
 							clipRule="evenodd"
 						/>
 					</svg>
-				</button>
+				</Link>
 			</div>
 		</div>
 	);
