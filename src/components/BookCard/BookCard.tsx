@@ -4,7 +4,7 @@ interface BookCardProps {
 	price: number;
 	description: string;
 	image: string;
-	viewMode: ViewMode;
+	viewMode?: ViewMode;
 }
 import Images from "../../assets/books/ImportImages";
 import { cn } from "../../utils/cn";
@@ -31,7 +31,7 @@ export function BookCard({
 			<div
 				className={cn(
 					"p-0 ",
-					`${viewMode !== "grid" ? "flex w-full gap-7" : ""}`
+					`${viewMode !== "grid" && viewMode ? "flex w-full gap-7" : ""}`
 				)}
 			>
 				<div
@@ -57,7 +57,7 @@ export function BookCard({
 				<div
 					className={cn(
 						"flex flex-col gap- justify-center text-center gap-0",
-						`${viewMode === "list" && "w-[40%] gap-3"}`
+						`${viewMode === "list" && viewMode ? "w-[40%] gap-3" : "w-80"}`
 					)}
 				>
 					<div

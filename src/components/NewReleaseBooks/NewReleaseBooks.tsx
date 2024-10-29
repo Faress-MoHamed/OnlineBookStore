@@ -7,66 +7,23 @@ import styles from "../Hero/pagination.module.css";
 import "../Hero/SwiperPagination.css";
 import { BookCard } from "../BookCard/BookCard";
 import { Link } from "react-router-dom";
-
-const books = [
-	{
-		title: "Simple Way Of Peace Life",
-		author: "Armor Ramsey",
-		price: 40.0,
-		imageUrl: "/placeholder.svg?height=300&width=200",
-	},
-	{
-		title: "Simple Way Of Peace Life",
-		author: "Armor Ramsey",
-		price: 40.0,
-		imageUrl: "/placeholder.svg?height=300&width=200",
-	},
-	{
-		title: "Simple Way Of Peace Life",
-		author: "Armor Ramsey",
-		price: 40.0,
-		imageUrl: "/placeholder.svg?height=300&width=200",
-	},
-	{
-		title: "Simple Way Of Peace Life",
-		author: "Armor Ramsey",
-		price: 40.0,
-		imageUrl: "/placeholder.svg?height=300&width=200",
-	},
-	{
-		title: "Simple Way Of Peace Life",
-		author: "Armor Ramsey",
-		price: 40.0,
-		imageUrl: "/placeholder.svg?height=300&width=200",
-	},
-	{
-		title: "Simple Way Of Peace Life",
-		author: "Armor Ramsey",
-		price: 40.0,
-		imageUrl: "/placeholder.svg?height=300&width=200",
-	},
-	{
-		title: "Simple Way Of Peace Life",
-		author: "Armor Ramsey",
-		price: 40.0,
-		imageUrl: "/placeholder.svg?height=300&width=200",
-	},
-	{
-		title: "Simple Way Of Peace Life",
-		author: "Armor Ramsey",
-		price: 40.0,
-		imageUrl: "/placeholder.svg?height=300&width=200",
-	},
-	{
-		title: "Simple Way Of Peace Life",
-		author: "Armor Ramsey",
-		price: 40.0,
-		imageUrl: "/placeholder.svg?height=300&width=200",
-	},
-	// Add more book items as needed
-];
+import { useQuery } from "@tanstack/react-query";
+import { GetAllBooks } from "../../Api/Customer/book";
+import { useState } from "react";
+import type { Book } from "../control-bar/ControlBar.types";
+import { Oval } from "react-loader-spinner";
 
 export default function NewReleaseBooks() {
+	const [booksData, setBooksData] = useState<Book[]>([]);
+	const { data: booksfetched, isLoading } = useQuery({
+		queryKey: ["books"],
+		queryFn: async () => {
+			const res = await GetAllBooks();
+			setBooksData(res.data);
+			return res;
+		},
+	});
+	console.log(booksfetched);
 	return (
 		<section className="bg-pink-50 py-12 px-4 md:px-8 relative">
 			<div className="max-w-6xl mx-auto">
@@ -78,6 +35,7 @@ export default function NewReleaseBooks() {
 						New Release Books
 					</h2>
 				</div>
+
 				<Swiper
 					modules={[Pagination]}
 					slidesPerView={1}
@@ -95,14 +53,27 @@ export default function NewReleaseBooks() {
 					}}
 					className="mb-8"
 				>
-					{books.map((book, index) => (
-						<SwiperSlide
-							className="flex justify-center items-center"
-							key={index}
-						>
-							<BookCard {...book} />
-						</SwiperSlide>
-					))}
+					{isLoading ? (
+						<Oval
+							visible={true}
+							height="80"
+							width="80"
+							color="#393280"
+							secondaryColor="#39328067"
+							ariaLabel="oval-loading"
+							wrapperStyle={{}}
+							wrapperClass=""
+						/>
+					) : (
+						booksData.slice(0, 8).map((book, index) => (
+							<SwiperSlide
+								className="flex justify-center items-center"
+								key={index}
+							>
+								<BookCard {...book} />
+							</SwiperSlide>
+						))
+					)}
 					<div className="bg-[#E0E0E0] h-[1px] w-full flex justify-center items-center my-4 "></div>
 					<div className="flex justify-between md:flex-row flex-col items-center relative  gap-6 h-10">
 						<div className="w-full text-center">
