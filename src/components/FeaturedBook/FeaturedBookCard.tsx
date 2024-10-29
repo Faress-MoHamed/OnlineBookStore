@@ -4,10 +4,13 @@ import { getRndInteger } from "../../utils/RandomNumber";
 
 // import image1 from "../../assets/book2.png";
 export default function FeaturedBookCard({
-	title = "Birds gonna be happy",
-	author = "Timbur hood",
-	price = 45,
-	// imageUrl = image1,
+	name,
+	author,
+	price,
+}: {
+	name: string;
+	author: string;
+	price: number;
 }) {
 	const RandomImage = getRndInteger(0, Images.length);
 	return (
@@ -35,7 +38,7 @@ export default function FeaturedBookCard({
 				</div>
 				{/** data of book */}
 				<div className="flex flex-col">
-					<h2 className="text-main font-semibold text-[28px]">{title}</h2>
+					<h2 className="text-main font-semibold text-[28px]">{name}</h2>
 					<p className="text-sm font-[400] leading-[33.28px] tracking-[2%] text-[#7A7A7A]">
 						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu
 						feugiat amet, libero ipsum enim pharetra hac.

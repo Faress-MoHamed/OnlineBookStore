@@ -37,7 +37,7 @@ export function BookCard({
 				<div
 					className={cn(
 						styles.bookCard,
-						"md:h-[400px]",
+						"h-[400px]",
 						`${viewMode === "list" && "h-[250px] w-[60%]"}`
 					)}
 				>
@@ -56,15 +56,27 @@ export function BookCard({
 				</div>
 				<div
 					className={cn(
-						"flex flex-col gap- justify-center text-center gap-0",
-						`${viewMode === "list" && viewMode ? "w-[40%] gap-3" : "w-80"}`
+						"flex flex-col  justify-center gap-0",
+						`${
+							viewMode === "list"
+								? "w-[40%] gap-3"
+								: viewMode === "grid"
+								? "w-full"
+								: "w-60"
+						}`
 					)}
 				>
 					<div
 						className={cn(
 							"p-4",
 							"flex flex-col ",
-							`${viewMode === "list" && "p-0 gap-4"}`
+							`${
+								viewMode === "list"
+									? "p-0 gap-4"
+									: viewMode === "grid"
+									? "px-0"
+									: "px-0"
+							}`
 						)}
 					>
 						<p className="text-sm text-[400] tracking-[2%] text-[#888888]">

@@ -1,29 +1,39 @@
 import { ChevronRight } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
-// import "swiper/css";
-// import "swiper/css/pagination";
 import styles from "../Hero/pagination.module.css";
 import "../Hero/SwiperPagination.css";
 import { BookCard } from "../BookCard/BookCard";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { GetAllBooks } from "../../Api/Customer/book";
-import { useState } from "react";
-import type { Book } from "../control-bar/ControlBar.types";
 import { Oval } from "react-loader-spinner";
+import type { Book } from "../control-bar/ControlBar.types";
+import { useEffect, useState } from "react";
 
 export default function NewReleaseBooks() {
 	const [booksData, setBooksData] = useState<Book[]>([]);
-	const { data: booksfetched, isLoading } = useQuery({
+
+	const {
+		data: booksfetched,
+		isLoading,
+		isSuccess,
+	} = useQuery({
 		queryKey: ["books"],
 		queryFn: async () => {
 			const res = await GetAllBooks();
-			setBooksData(res.data);
-			return res;
+			console.log(res.data);
+			return res.data;
 		},
 	});
-	console.log(booksfetched);
+	// console.log(booksfetched.data);
+
+	useEffect(() => {
+		if (isSuccess && booksfetched) {
+			setBooksData(booksfetched.data);
+		}
+	}, [booksfetched, isSuccess]);
+
 	return (
 		<section className="bg-pink-50 py-12 px-4 md:px-8 relative">
 			<div className="max-w-6xl mx-auto">
@@ -41,7 +51,6 @@ export default function NewReleaseBooks() {
 					slidesPerView={1}
 					spaceBetween={20}
 					pagination={{
-						el: "div.swiper-pagination",
 						clickable: true,
 						bulletClass: styles["custom-bullet"],
 						bulletActiveClass: styles["custom-bullet-active"],
@@ -61,13 +70,11 @@ export default function NewReleaseBooks() {
 							color="#393280"
 							secondaryColor="#39328067"
 							ariaLabel="oval-loading"
-							wrapperStyle={{}}
-							wrapperClass=""
 						/>
 					) : (
-						booksData.slice(0, 8).map((book, index) => (
+						booksData?.slice(0, 8).map((book: Book, index: number) => (
 							<SwiperSlide
-								className="flex justify-center items-center"
+								className="flex justify-center items-center mb-4"
 								key={index}
 							>
 								<BookCard {...book} />
@@ -75,9 +82,9 @@ export default function NewReleaseBooks() {
 						))
 					)}
 					<div className="bg-[#E0E0E0] h-[1px] w-full flex justify-center items-center my-4 "></div>
-					<div className="flex justify-between md:flex-row flex-col items-center relative  gap-6 h-10">
-						<div className="w-full text-center">
-							<div className="swiper-pagination relative"></div>
+					<div className="flex justify-between md:flex-row flex-col items-center relative gap-6">
+						<div className="w-full">
+							<div className="swiper-pagination relative "></div>
 						</div>
 						<Link
 							to={"/books"}
