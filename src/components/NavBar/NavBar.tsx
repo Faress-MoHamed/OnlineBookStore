@@ -99,7 +99,7 @@ export default function NavBar() {
 					>
 						<div
 							className={cn(
-								`md:w-5 md:h-5 w-3 h-3 rounded-full absolute -top-1 md:-top-4 -right-[9px] bg-orange-400 flex justify-center items-center text-sm text-black z-10`
+								`md:w-5 md:h-5 w-3 h-3 rounded-full absolute -top-1 md:-top-4 -right-[9px] bg-orange-400 flex justify-center items-center text-sm text-white z-10 p-1 font-semibold `
 							)}
 						>
 							{cart.items.length}
