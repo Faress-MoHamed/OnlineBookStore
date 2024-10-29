@@ -1,12 +1,17 @@
 import toast from "react-hot-toast";
 import Images from "../../assets/books/ImportImages";
-import { useAppDispatch } from "../../redux/hooks/reduxhooks";
-import { addItemToCart } from "../../redux/slices/cartSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxhooks";
+import {
+	addItemToCart,
+	decreaseQuantity,
+	increaseQuantity,
+} from "../../redux/slices/cartSlice";
 import { cn } from "../../utils/cn";
 import { getRndInteger } from "../../utils/RandomNumber";
 import type { Book, ViewMode } from "../control-bar/ControlBar.types";
 import styles from "./bookCard.module.css";
 import { useMemo } from "react";
+import { Minus, Plus } from "lucide-react";
 export function BookCard({
 	book,
 	viewMode,
@@ -14,17 +19,30 @@ export function BookCard({
 	book: Book;
 	viewMode?: ViewMode;
 }) {
+	const cart = useAppSelector((state) => state.cart);
+	const existingItem = cart.items.find((item) => item._id === book._id);
+	const dispatch = useAppDispatch();
+
 	const { name, author, price, image, description } = book;
+
 	const RandomImage = useMemo(
 		() => getRndInteger(0, Images.length),
 		[Images.length]
 	);
-	const dispate = useAppDispatch();
+
 	const handleAddToCart = ({ book }: { book: Book }) => {
-		dispate(addItemToCart({ ...book, quantity: 1 }));
+		dispatch(addItemToCart({ ...book, quantity: 1 }));
 		toast.success(`${name} add to cart successfully`);
 	};
 
+	const handleQuantityIncrease = (id: string) => {
+		dispatch(increaseQuantity(id));
+		toast.success("the book Increase derease successfully");
+	};
+	const handleQuantityDecrease = (id: string) => {
+		dispatch(decreaseQuantity(id));
+		toast.success("the book quantity derease successfully");
+	};
 	return (
 		<div
 			className={cn(
@@ -50,20 +68,54 @@ export function BookCard({
 						alt={name}
 						className={cn("max-w-full object-fill")}
 					/>
-					<div
-						className={cn(
-							styles.overlay,
-							"bg-black/20 h-full w-full left-0 top-[500px] absolute duration-300"
-						)}
-					></div>
-					<button
-						onClick={() => {
-							handleAddToCart({ book });
-						}}
-						className={styles.bookCardbtn}
-					>
-						add to cart
-					</button>
+					{
+						<>
+							<div
+								className={cn(
+									styles.overlay,
+									"bg-black/20 h-full w-full left-0  absolute duration-300",
+									`${existingItem ? "top-0" : "top-[500px]"}`
+								)}
+							></div>
+							{existingItem ? (
+								<div
+									className={cn(
+										styles.bookCardbtn,
+										"flex justify-between hover:bg-white top-2/4 bg-white p-1 rounded-md"
+									)}
+								>
+									<button
+										onClick={() => {
+											handleQuantityIncrease(book._id);
+										}}
+										className="bg-[#ed553b] rounded-md  p-2"
+									>
+										<Plus />
+									</button>
+									<p className="w-8 flex justify-center items-center text-3xl text-main font-semibold">
+										{existingItem.quantity}
+									</p>
+									<button
+										onClick={() => {
+											handleQuantityDecrease(book._id);
+										}}
+										className="bg-[#ed553b] rounded-md p-2"
+									>
+										<Minus />
+									</button>
+								</div>
+							) : (
+								<button
+									onClick={() => {
+										handleAddToCart({ book });
+									}}
+									className={cn(styles.bookCardbtn)}
+								>
+									add to cart
+								</button>
+							)}
+						</>
+					}
 				</div>
 				<div
 					className={cn(
