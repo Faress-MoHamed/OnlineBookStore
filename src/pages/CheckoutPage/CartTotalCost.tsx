@@ -44,8 +44,13 @@ export default function CartTotalCost({
 			</div>
 			<button
 				type="submit"
+				disabled={total === 0}
 				onClick={() => handleSubmit()}
-				className="w-full bg-[#ED553B] text-white py-4 px-4  hover:opacity-85 transition duration-200 flex justify-center gap-3"
+				className={`w-full ${
+					total === 0
+						? "bg-black/35 "
+						: "bg-[#ED553B]  hover:opacity-85 transition duration-200"
+				} py-4 px-4   flex justify-center gap-3 text-white`}
 			>
 				Proceed
 				<ShoppingCart />

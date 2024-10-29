@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Images from "../../assets/books/ImportImages";
 import { getRndInteger } from "../../utils/RandomNumber";
+import { useMemo } from "react";
 
 // import image1 from "../../assets/book2.png";
 export default function FeaturedBookCard({
@@ -12,7 +13,10 @@ export default function FeaturedBookCard({
 	author: string;
 	price: number;
 }) {
-	const RandomImage = getRndInteger(0, Images.length);
+	const RandomImage = useMemo(
+		() => getRndInteger(0, Images.length),
+		[Images.length]
+	);
 	return (
 		<div className="flex md:flex-row flex-col items-center justify-between gap-10 font-Inter md:h-[90vh]  w-[90%] P-8">
 			{/**image side */}

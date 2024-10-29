@@ -3,6 +3,7 @@ import ButtonMore from "../ButtonMore/ButtonMore";
 // import book1 from "../../assets/book1.png";
 import Images from "../../assets/books/ImportImages";
 import { getRndInteger } from "../../utils/RandomNumber";
+import { useMemo } from "react";
 
 interface propsType {
 	title: string;
@@ -17,7 +18,10 @@ export default function SlideComponent({
 	// image = book1,
 	title,
 }: propsType) {
-	const randomNumber = getRndInteger(0, Images.length);
+	const randomNumber = useMemo(
+		() => getRndInteger(0, Images.length),
+		[Images.length]
+	);
 
 	const { isMobile } = useMobileHandler();
 

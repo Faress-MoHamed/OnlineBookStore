@@ -1,9 +1,15 @@
-import { useState } from "react";
 import ProductsTable from "./ProductsTable";
 import CartTotalCost from "./CartTotalCost";
 import ShippingForm from "./ShippingForm";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxhooks";
+import type { Book } from "../../components/control-bar/ControlBar.types";
+import {
+	decreaseQuantity,
+	increaseQuantity,
+	removeItemFromCart,
+} from "../../redux/slices/cartSlice";
 
 const validationSchema = Yup.object({
 	userName: Yup.string().required("User Name is required"),
@@ -16,36 +22,30 @@ const validationSchema = Yup.object({
 	phoneNumber: Yup.string().required("Phone Number is required"),
 });
 
-export interface Product {
-	id: number;
-	title: string;
-	amount: number;
-	cost: number;
+export interface BookItem extends Book {
+	quantity: number;
 }
 
 export default function CheckoutPage() {
-	const [products, setProducts] = useState<Product[]>([
-		{ id: 1, title: "My Book Cover", amount: 1, cost: 36 },
-		{ id: 2, title: "My Book Cover", amount: 1, cost: 36 },
-		{ id: 3, title: "My Book Cover", amount: 1, cost: 36 },
-	]);
+	const cart = useAppSelector((state) => state.cart);
+	const dispatch = useAppDispatch();
+	const products = cart.items;
 
-	const handleRemove = (id: number) => {
-		setProducts(products.filter((product) => product.id !== id));
+	const handleRemove = (id: string) => {
+		dispatch(removeItemFromCart(id));
 	};
 
-	const handleQuantityChange = (id: number, newAmount: number) => {
-		setProducts(
-			products.map((product) =>
-				product.id === id ? { ...product, amount: newAmount } : product
-			)
+	const handleQuantityIncrease = (id: string) => {
+		dispatch(increaseQuantity(id));
+	};
+	const handleQuantityDecrease = (id: string) => {
+		dispatch(decreaseQuantity(id));
+	};
+
+		const subtotal = products.reduce(
+			(sum, product) => sum + product.price * product.quantity,
+			0
 		);
-	};
-
-	const subtotal = products.reduce(
-		(sum, product) => sum + product.cost * product.amount,
-		0
-	);
 	const tax = subtotal * 0.0444; // Approximately 1.6 / 36
 	const total = subtotal + tax;
 
@@ -70,14 +70,21 @@ export default function CheckoutPage() {
 				{/**product table */}
 				<div className="md:w-2/4 w-full rounded-md shadow-2xl overflow-hidden md:order-1 order-2">
 					<ProductsTable
-						onQuantityChange={handleQuantityChange}
+						onQuantityIncrease={handleQuantityIncrease}
+						onQuantityDecrease={handleQuantityDecrease}
 						onRemove={handleRemove}
 						products={products}
 					/>
 				</div>
 				{/**checkout card */}
 				<div className="md:w-[350px] w-full md:order-2 order-1">
-					<CartTotalCost handleSubmit={formik.handleSubmit} subtotal={subtotal} tax={tax} total={total} />{" "}
+					<CartTotalCost
+						handleSubmit={formik.handleSubmit}
+						subtotal={subtotal}
+						tax={tax}
+						total={total}
+						
+					/>{" "}
 				</div>
 			</div>
 			<div className="md:w-[70%]">

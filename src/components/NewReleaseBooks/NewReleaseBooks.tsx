@@ -77,7 +77,7 @@ export default function NewReleaseBooks() {
 								className="flex justify-center items-center mb-4"
 								key={index}
 							>
-								<BookCard {...book} />
+								<BookCard book={book} />
 							</SwiperSlide>
 						))
 					)}

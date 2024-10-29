@@ -1,25 +1,29 @@
-interface BookCardProps {
-	name: string;
-	author: string;
-	price: number;
-	description: string;
-	image: string;
-	viewMode?: ViewMode;
-}
+import toast from "react-hot-toast";
 import Images from "../../assets/books/ImportImages";
+import { useAppDispatch } from "../../redux/hooks/reduxhooks";
+import { addItemToCart } from "../../redux/slices/cartSlice";
 import { cn } from "../../utils/cn";
 import { getRndInteger } from "../../utils/RandomNumber";
-import type { ViewMode } from "../control-bar/ControlBar.types";
+import type { Book, ViewMode } from "../control-bar/ControlBar.types";
 import styles from "./bookCard.module.css";
+import { useMemo } from "react";
 export function BookCard({
-	name,
-	author,
-	price,
-	image,
+	book,
 	viewMode,
-	description,
-}: BookCardProps) {
-	const RandomImage = getRndInteger(0, Images.length);
+}: {
+	book: Book;
+	viewMode?: ViewMode;
+}) {
+	const { name, author, price, image, description } = book;
+	const RandomImage = useMemo(
+		() => getRndInteger(0, Images.length),
+		[Images.length]
+	);
+	const dispate = useAppDispatch();
+	const handleAddToCart = ({ book }: { book: Book }) => {
+		dispate(addItemToCart({ ...book, quantity: 1 }));
+		toast.success(`${name} add to cart successfully`);
+	};
 
 	return (
 		<div
@@ -52,7 +56,14 @@ export function BookCard({
 							"bg-black/20 h-full w-full left-0 top-[500px] absolute duration-300"
 						)}
 					></div>
-					<button className={styles.bookCardbtn}>add to cart</button>
+					<button
+						onClick={() => {
+							handleAddToCart({ book });
+						}}
+						className={styles.bookCardbtn}
+					>
+						add to cart
+					</button>
 				</div>
 				<div
 					className={cn(

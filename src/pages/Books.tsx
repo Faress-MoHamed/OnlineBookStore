@@ -94,7 +94,7 @@ export default function Books() {
 							)}
 						>
 							{booksData.map((book) => (
-								<BookCard viewMode={viewMode} key={book._id} {...book} />
+								<BookCard viewMode={viewMode} key={book._id} book={book} />
 							))}
 						</div>
 					)}

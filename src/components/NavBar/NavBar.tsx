@@ -9,7 +9,10 @@ import { useAuth } from "../../context/AuthProvider";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { HandleLogout } from "../../utils/HandleLogout";
 import useMobileHandler from "../../hooks/useMobileHandler";
+import { useAppSelector } from "../../redux/hooks/reduxhooks";
+import { cn } from "../../utils/cn";
 export default function NavBar() {
+	const cart = useAppSelector((state) => state.cart);
 	const [open, setOpen] = useState(false);
 	const { isMobile } = useMobileHandler();
 	const { auth, setAuth } = useAuth();
@@ -90,8 +93,17 @@ export default function NavBar() {
 				{auth?.profile.role !== "Admin" && (
 					<Link
 						to={"/checkout"}
-						className="hover:text-[#ED553B] transition-colors duration-200"
+						className={cn(
+							`relative hover:text-[#ED553B] transition-colors duration-200 `
+						)}
 					>
+						<div
+							className={cn(
+								`md:w-5 md:h-5 w-3 h-3 rounded-full absolute -top-1 md:-top-4 -right-[9px] bg-orange-400 flex justify-center items-center text-sm text-black z-10`
+							)}
+						>
+							{cart.items.length}
+						</div>
 						<ShoppingBag className="lg:w-[22px] w-[15px]" />
 					</Link>
 				)}
