@@ -10,6 +10,7 @@ import {
 	increaseQuantity,
 	removeItemFromCart,
 } from "../../redux/slices/cartSlice";
+import toast from "react-hot-toast";
 
 const validationSchema = Yup.object({
 	userName: Yup.string().required("User Name is required"),
@@ -33,19 +34,22 @@ export default function CheckoutPage() {
 
 	const handleRemove = (id: string) => {
 		dispatch(removeItemFromCart(id));
+		toast.success("the book removed successfully");
 	};
 
 	const handleQuantityIncrease = (id: string) => {
 		dispatch(increaseQuantity(id));
+		toast.success("the book Increase derease successfully");
 	};
 	const handleQuantityDecrease = (id: string) => {
 		dispatch(decreaseQuantity(id));
+		toast.success("the book quantity derease successfully");
 	};
 
-		const subtotal = products.reduce(
-			(sum, product) => sum + product.price * product.quantity,
-			0
-		);
+	const subtotal = products.reduce(
+		(sum, product) => sum + product.price * product.quantity,
+		0
+	);
 	const tax = subtotal * 0.0444; // Approximately 1.6 / 36
 	const total = subtotal + tax;
 
@@ -83,7 +87,6 @@ export default function CheckoutPage() {
 						subtotal={subtotal}
 						tax={tax}
 						total={total}
-						
 					/>{" "}
 				</div>
 			</div>
