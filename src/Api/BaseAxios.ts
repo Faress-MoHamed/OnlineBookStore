@@ -31,7 +31,7 @@ AxiosInstance.interceptors.request.use(
 
 		// Ensure token is included in the Authorization header
 		if (token) {
-			config.headers.Authorization = `Bearer ${token}`;
+			config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
 		}
 		return config;
 	},

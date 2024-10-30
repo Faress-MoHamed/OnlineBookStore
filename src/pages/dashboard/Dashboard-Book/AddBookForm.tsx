@@ -4,18 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { GetAllCategories } from "../../../Api/Admin/category";
 import Header from "../../../components/ui/Header";
-import { CreateBook } from "../../../Api/Admin/book";
+import { CreateBook, UpdateBook } from "../../../Api/Admin/book";
 import * as Yup from "yup";
-
-interface BookFormData {
-	name: string;
-	description: string;
-	author: string;
-	price: string;
-	// image: File | null;
-	image: string;
-	category: string;
-}
+import type { BookFormResponse } from "./BookList";
 
 {
 	/**  */
@@ -40,15 +31,15 @@ interface NewBookResponse {
 }
 
 interface AddBookFormProps {
-	formData: BookFormData; // Accepting formData as props
-	setFormData: React.Dispatch<React.SetStateAction<BookFormData>>; // Accepting setFormData as props
+	formData: BookFormResponse; // Accepting formData as props
+	setFormData: React.Dispatch<React.SetStateAction<BookFormResponse>>; // Accepting setFormData as props
 }
 
 const BookValidate = Yup.object().shape({
 	name: Yup.string().required("Name is required"),
 	description: Yup.string().required("Description is required"),
 	author: Yup.string().required("Author is required"),
-	price: Yup.string()
+	price: Yup.number()
 		.min(0, "the min price is 0")
 		.required("Price is required"),
 	// image: Yup.mixed()
@@ -71,41 +62,78 @@ const AddBookForm: React.FC<AddBookFormProps> = ({ formData, setFormData }) => {
 	>([]);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const { mutate: addBook } = useMutation<NewBookResponse, Error, BookFormData>(
-		{
-			mutationKey: ["books", "newBook"],
-			mutationFn: async (data: BookFormData) => {
-				try {
-					const res = await CreateBook(data);
-					return res;
-				} catch (error) {
-					toast.error("Error in adding book");
-					throw error;
-				}
-			},
-			onSuccess: (data) => {
-				queryClient.invalidateQueries({ queryKey: ["books"] });
-				resetForm();
-				toast.success(data.message);
-				setIsLoading(false);
-			},
-			onMutate: () => {
-				setIsLoading(true);
-			},
-		}
-	);
+	const { mutate: addBook } = useMutation<
+		NewBookResponse,
+		Error,
+		BookFormResponse
+	>({
+		mutationKey: ["books", "newBook"],
+		mutationFn: async (data: BookFormResponse) => {
+			try {
+				const res = await CreateBook(data);
+				return res;
+			} catch (error) {
+				toast.error("Error in adding book");
+				throw error;
+			}
+		},
+		onSuccess: (data) => {
+			queryClient.invalidateQueries({ queryKey: ["books"] });
+			resetForm();
+			toast.success(data.message);
+			setIsLoading(false);
+		},
+		onMutate: () => {
+			setIsLoading(true);
+		},
+	});
+
+	const { mutate: updateBookMutate } = useMutation<
+		NewBookResponse,
+		Error,
+		{ id: string; data: BookFormResponse }
+	>({
+		mutationKey: ["books", "updateBook"],
+		mutationFn: async (payload: { id: string; data: BookFormResponse }) => {
+			try {
+				const res = await UpdateBook(payload.id, payload.data);
+				return res;
+			} catch (error) {
+				toast.error("Error in updating book");
+				throw error;
+			}
+		},
+		onSuccess: (data) => {
+			queryClient.invalidateQueries({ queryKey: ["books"] });
+			resetForm();
+			toast.success(data.message);
+			setIsLoading(false);
+		},
+		onMutate: () => {
+			setIsLoading(true);
+		},
+	});
 
 	const resetForm = () => {
 		formik.resetForm();
+		setFormData({
+			_id: "",
+			name: "",
+			description: "",
+			author: "",
+			price: 0,
+			image: "",
+			category: "",
+		});
 		if (fileInputRef.current) {
 			fileInputRef.current.value = "";
 		}
 	};
-
 	const formik = useFormik({
+		enableReinitialize: true,
 		validationSchema: BookValidate,
 		initialValues: formData, // Set initial values from props
-		onSubmit: async (values: BookFormData) => {
+		onSubmit: async (values: BookFormResponse) => {
 			// const data = new FormData();
 			// data.append("name", values.name);
 			// data.append("description", values.description);
@@ -117,7 +145,12 @@ const AddBookForm: React.FC<AddBookFormProps> = ({ formData, setFormData }) => {
 			// }
 			// console.log(typeof data);
 			try {
-				addBook(values);
+				if (values._id !== "") {
+					const payload = { id: values._id, data: values };
+					updateBookMutate(payload);
+				} else {
+					addBook(values);
+				}
 			} catch (error) {
 				console.error("Error submitting book:", error);
 			}
@@ -249,7 +282,11 @@ const AddBookForm: React.FC<AddBookFormProps> = ({ formData, setFormData }) => {
 						disabled={isLoading}
 						className="p-4 bg-main text-white rounded-lg hover:opacity-85 transition-all"
 					>
-						{isLoading ? "Submitting..." : "Add Book"}
+						{isLoading
+							? "Submitting..."
+							: formData._id !== ""
+							? "Update Book"
+							: "Add Book"}
 					</button>
 				</form>
 			</div>

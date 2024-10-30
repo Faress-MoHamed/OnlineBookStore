@@ -88,7 +88,7 @@ export function BookCard({
 										onClick={() => {
 											handleQuantityIncrease(book._id);
 										}}
-										className="bg-[#ed553b] rounded-md  p-2"
+										className="bg-[#ed553b] rounded-md  md:p-2 p-1"
 									>
 										<Plus />
 									</button>
@@ -99,7 +99,7 @@ export function BookCard({
 										onClick={() => {
 											handleQuantityDecrease(book._id);
 										}}
-										className="bg-[#ed553b] rounded-md p-2"
+										className="bg-[#ed553b] rounded-md md:p-2 p-1"
 									>
 										<Minus />
 									</button>

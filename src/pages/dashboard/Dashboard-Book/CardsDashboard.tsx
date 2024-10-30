@@ -3,26 +3,20 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { DeleteBook } from "../../../Api/Admin/book";
-
-interface BookFormData {
-	name: string;
-	description: string;
-	author: string;
-	price: string;
-	// image: File | null;
-	image: string;
-	category: string;
-}
+import { getRndInteger } from "../../../utils/RandomNumber";
+import Images from "../../../assets/books/ImportImages";
+import type { BookFormResponse } from "./BookList";
 
 function CardsDashboard({
 	product,
 	setFormData,
 }: {
-	product: any;
-	setFormData: React.Dispatch<React.SetStateAction<BookFormData>>;
+	product: BookFormResponse;
+	setFormData: React.Dispatch<React.SetStateAction<BookFormResponse>>;
 }) {
+	const randomIntg = getRndInteger(0, Images.length);
+
 	const queryClient = useQueryClient();
-	const API_URL = import.meta.env.REACT_API_URL;
 	type id = string;
 	const { mutate: handleDelete } = useMutation<void, Error, id>({
 		mutationKey: ["books", "deletebook"],
@@ -47,8 +41,9 @@ function CardsDashboard({
 		},
 	});
 
-	const handleEdit = (product: BookFormData) => {
+	const handleEdit = (product: BookFormResponse) => {
 		setFormData({
+			_id: product._id,
 			name: product.name,
 			description: product.description,
 			author: product.author,
@@ -60,10 +55,11 @@ function CardsDashboard({
 
 	const resetForm = () => {
 		setFormData({
+			_id: "",
 			name: "",
 			description: "",
 			author: "",
-			price: "",
+			price: 0,
 			image: "",
 			category: "",
 		});
@@ -72,7 +68,7 @@ function CardsDashboard({
 	return (
 		<main className="flex flex-col items-center justify-center bg-gray-50 p-6 rounded-lg shadow-lg">
 			<img
-				src={`${API_URL}/${product.image}`}
+				src={Images[randomIntg]}
 				alt={product.name}
 				className="w-40 h-40 object-cover rounded-full mb-4 shadow-md"
 			/>

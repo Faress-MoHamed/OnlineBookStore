@@ -1,17 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import toast from "react-hot-toast";
 import AxiosInstance from "../BaseAxios";
-interface BookFormData {
-	name: string;
-	description: string;
-	author: string;
-	price: string;
-	// image: File | null;
-	image: string;
-	category: string;
-}
+import type { BookFormResponse } from "../../pages/dashboard/Dashboard-Book/BookList";
 
-export const CreateBook = async (FormData: BookFormData) => {
+export const CreateBook = async (FormData: BookFormResponse) => {
 	try {
 		const { data } = await AxiosInstance.post("/api/book", FormData);
 		return data;
@@ -32,6 +24,18 @@ export const AllBooks = async () => {
 export const DeleteBook = async (id: string) => {
 	try {
 		const { data } = await AxiosInstance.delete(`/api/book/${id}`);
+		return data;
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+export const UpdateBook = async (id: string, formData: BookFormResponse) => {
+	try {
+		const { data } = await AxiosInstance.put(`/api/book/${id}`, {
+			...formData,
+			_id: undefined,
+		});
 		return data;
 	} catch (error) {
 		console.error(error);

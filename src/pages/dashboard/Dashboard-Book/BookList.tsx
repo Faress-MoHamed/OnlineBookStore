@@ -1,46 +1,47 @@
-import  { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import CardsDashboard from "./CardsDashboard";
+import { useState, useEffect } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import AddBookForm from "./AddBookForm";
 import { Helmet } from "react-helmet";
 import { GetAllBooks } from "../../../Api/Customer/book";
-import { Oval } from "react-loader-spinner";
+import LazyLoading from "../../LazyLoading";
+import BookData from "./BookData";
 
-interface BookFormData {
+export interface BookFormData {
 	name: string;
 	description: string;
 	author: string;
 	price: string;
-	// image: File | null;
 	image: string;
 	category: string;
 }
 
-interface BookFormResponse {
+export interface BookFormResponse {
 	_id: string;
 	name: string;
 	description: string;
 	author: string;
-	price: string;
-	image: File | null;
+	image: string;
+	price: number;
 	category: string;
 }
+
 const BookList = () => {
-	const [products, setProducts] = useState<BookFormResponse[]>([]);
-	const [formData, setFormData] = useState<BookFormData>({
+	const [Books, setBooks] = useState<BookFormResponse[]>([]);
+	const [formData, setFormData] = useState<BookFormResponse>({
+		_id: "",
 		name: "",
 		description: "",
 		author: "",
-		price: "",
+		price: 0,
 		image: "",
 		category: "",
 	});
 
 	const {
-		data: productsData,
+		data: BooksData = [],
+		isSuccess,
 		isLoading,
-		error,
-	} = useQuery({
+	} = useSuspenseQuery({
 		queryKey: ["books"],
 		queryFn: async () => {
 			const res = await GetAllBooks();
@@ -49,40 +50,25 @@ const BookList = () => {
 	});
 
 	useEffect(() => {
-		if (productsData) setProducts(productsData);
-		if (error) console.log("Error fetching products", error);
-	}, [productsData, error]);
+		if (Array.isArray(BooksData) && isSuccess) {
+			setBooks(BooksData);
+		}
+	}, [BooksData, isSuccess]);
 
 	return (
 		<>
 			<Helmet>
-				<title>Products</title>
-				<meta name="description" content="Products" />
+				<title>Books</title>
+				<meta name="description" content="Books" />
 			</Helmet>
 			<AddBookForm formData={formData} setFormData={setFormData} />
 			<div className="grid grid-cols-1 gap-6 p-6 bg-black/10 md:grid-cols-2 lg:grid-cols-3 rounded-lg shadow-md mt-10 min-h-[50vh] relative">
 				{isLoading ? (
-					<div className="absolute left-2/4 top-2/4 transform -translate-x-2/4 -translate-y-2/4">
-						<Oval
-							visible={true}
-							height="80"
-							width="80"
-							color="#4fa94d"
-							ariaLabel="oval-loading"
-							wrapperStyle={{}}
-							wrapperClass=""
-						/>
-					</div>
-				) : products.length === 0 ? (
-					<p>No products to display</p>
+					<LazyLoading />
+				) : Books.length === 0 ? (
+					<p>No Books to display</p>
 				) : (
-					products?.map((product) => (
-						<CardsDashboard
-							key={product._id}
-							product={product}
-							setFormData={setFormData}
-						/>
-					))
+					<BookData books={Books} setFormData={setFormData} />
 				)}
 			</div>
 		</>
