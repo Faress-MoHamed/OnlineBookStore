@@ -12,6 +12,7 @@ import type { Book, ViewMode } from "../control-bar/ControlBar.types";
 import styles from "./bookCard.module.css";
 import { useMemo } from "react";
 import { Minus, Plus } from "lucide-react";
+import { useAuth } from "../../context/AuthProvider";
 export function BookCard({
 	book,
 	viewMode,
@@ -19,6 +20,7 @@ export function BookCard({
 	book: Book;
 	viewMode?: ViewMode;
 }) {
+	const { auth } = useAuth();
 	const cart = useAppSelector((state) => state.cart);
 	const existingItem = cart.items.find((item) => item._id === book._id);
 	const dispatch = useAppDispatch();
@@ -68,7 +70,7 @@ export function BookCard({
 						alt={name}
 						className={cn("max-w-full object-fill")}
 					/>
-					{
+					{auth?.profile.role !== "Admin" && (
 						<>
 							<div
 								className={cn(
@@ -115,7 +117,7 @@ export function BookCard({
 								</button>
 							)}
 						</>
-					}
+					)}
 				</div>
 				<div
 					className={cn(

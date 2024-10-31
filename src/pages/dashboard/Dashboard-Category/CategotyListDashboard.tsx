@@ -6,6 +6,7 @@ import { Oval } from "react-loader-spinner";
 import { GetAllCategories } from "../../../Api/Admin/category";
 import CategoryCard from "./CategoryCard";
 interface CategoryFormData {
+	_id?: string;
 	title: string;
 }
 interface CategoryFormResponse {
@@ -16,6 +17,7 @@ interface CategoryFormResponse {
 const CategotyListDashboard = () => {
 	const [products, setProducts] = useState<CategoryFormResponse[]>([]);
 	const [formData, setFormData] = useState<CategoryFormData>({
+		_id: "",
 		title: "",
 	});
 

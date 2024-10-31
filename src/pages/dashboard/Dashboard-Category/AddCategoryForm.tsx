@@ -106,6 +106,10 @@ const AddCategoryForm: React.FC<AddCategoryFormProps> = ({
 
 	const resetForm = () => {
 		formik.resetForm();
+		setFormData({
+			_id: "",
+			title: "",
+		});
 		if (fileInputRef.current) {
 			fileInputRef.current.value = "";
 		}
