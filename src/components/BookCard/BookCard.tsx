@@ -13,6 +13,7 @@ import styles from "./bookCard.module.css";
 import { useMemo } from "react";
 import { Minus, Plus } from "lucide-react";
 import { useAuth } from "../../context/AuthProvider";
+
 export function BookCard({
 	book,
 	viewMode,

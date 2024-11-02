@@ -82,7 +82,7 @@ export default function NewReleaseBooks() {
 						))
 					)}
 					<div className="bg-[#E0E0E0] h-[1px] w-full flex justify-center items-center my-4 "></div>
-					<div className="flex justify-between md:flex-row flex-col items-center relative gap-6">
+					<div className="flex justify-between md:flex-row flex-col items-center relative gap-6 h-[50px]">
 						<div className="w-full">
 							<div className="swiper-pagination relative "></div>
 						</div>

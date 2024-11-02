@@ -16,7 +16,10 @@ export const GetAllCategories = async () => {
 export const CreateCategory = async (FormData: categoryFormData) => {
 	try {
 		console.log(FormData);
-		const { data } = await AxiosInstance.post("/api/category", FormData);
+		const { data } = await AxiosInstance.post("/api/category", {
+			...FormData,
+			_id: undefined,
+		});
 		return data;
 	} catch (error: any) {
 		error.response.data.message.map((el: string) => {

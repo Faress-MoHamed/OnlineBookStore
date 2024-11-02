@@ -60,7 +60,7 @@ function CardsDashboard({
 			description: "",
 			author: "",
 			price: 0,
-			image: "",
+			image: null,
 			category: "",
 		});
 	};

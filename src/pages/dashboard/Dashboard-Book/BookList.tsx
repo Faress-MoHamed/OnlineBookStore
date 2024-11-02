@@ -20,7 +20,7 @@ export interface BookFormResponse {
 	name: string;
 	description: string;
 	author: string;
-	image: string;
+	image: File | null;
 	price: number;
 	category: string;
 }
@@ -33,7 +33,7 @@ const BookList = () => {
 		description: "",
 		author: "",
 		price: 0,
-		image: "",
+		image: null,
 		category: "",
 	});
 

@@ -7,6 +7,7 @@ export const GetAllBooks = async (page: number = 1, limit: number = 0) => {
 		);
 		return data;
 	} catch (error) {
+		// console.log(error);
 		console.error(error);
 	}
 };
