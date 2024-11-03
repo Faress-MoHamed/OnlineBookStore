@@ -14,8 +14,6 @@ import { cn } from "../utils/cn";
 
 export default function Books() {
 	const queryClient = useQueryClient();
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [sortBy, setSortBy] = useState<SortOption>("Alphabetically, A-Z");
 	const [navigate, setNavigate] = useState<number>(1);
 	const [booksData, setBooksData] = useState<Book[]>([]);

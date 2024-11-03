@@ -1,149 +1,120 @@
-import { FormikProps } from "formik";
+import {
+	AddressElement,
+	CardElement,
+	useElements,
+	useStripe,
+} from "@stripe/react-stripe-js";
+import { useState, type FormEvent } from "react";
+import toast from "react-hot-toast";
+import { GetMyBasket } from "../../Api/Customer/Basket";
+import { CreateOrder } from "../../Api/Customer/order";
+import { useNavigate } from "react-router-dom";
+import type { StripeAddressElementOptions } from "@stripe/stripe-js";
+import { ShoppingCart } from "lucide-react";
 
-interface FormValues {
-	userName: string;
-	email: string;
-	country: string;
-	city: string;
-	address: string;
-	phoneNumber: string;
-}
+export default function ShippingForm() {
+	const navigate = useNavigate();
+	const stripe = useStripe();
+	const elements = useElements();
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-export default function ShippingForm({
-	formik,
-}: {
-	formik: FormikProps<FormValues>;
-}) {
+	const HandleSubmit = async (e: FormEvent) => {
+		e.preventDefault();
+
+		if (!stripe || !elements) {
+			return;
+		}
+		setIsLoading(true);
+
+		const cardElement = elements.getElement("card");
+		const AddressElement = elements.getElement("address");
+
+		if (!cardElement || !AddressElement) {
+			setIsLoading(false);
+			return;
+		}
+
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { token, error } = await stripe.createToken(cardElement);
+		const address = await AddressElement.getValue();
+		if (error) {
+			setIsLoading(false);
+			toast.error(error.message || "Error in payment");
+		} else {
+			if (address.complete) {
+				const { _id: CartId } = await GetMyBasket();
+				const data = {
+					token: "tok_visa",
+					delivery_address: {
+						country: address.value.address.country,
+						city: address.value.address.city,
+						state: address.value.address.state,
+						building: 1,
+						street: "street",
+						floor: 1,
+						appartment: 1,
+						mobile: address.value.phone,
+						additional_info: "ayhaga",
+						location: {
+							type: "Point",
+							coordinates: [30.0444, 31.2357],
+						},
+					},
+				};
+
+				try {
+					const res = await CreateOrder(CartId, data);
+					console.log(res);
+					const orderId = res.data._id;
+					const totalAmount = res.data.total;
+
+					toast.success(res.message);
+
+					navigate("/confirmOrder", {
+						state: { orderId, totalAmount },
+					});
+				} catch (error) {
+					setIsLoading(false);
+					console.error(error);
+				}
+			} else {
+				setIsLoading(false);
+
+				toast.error("please fill all fields");
+			}
+		}
+	};
+	const addressElementOptions: StripeAddressElementOptions = {
+		display: {
+			name: "split",
+		},
+		fields: {
+			phone: "always", // Can also be "always" or "auto"
+		},
+		mode: "shipping",
+	};
 	return (
 		<div className="bg-custom-gradient p-8 rounded-lg shadow-md w-full">
 			<h2 className="text-2xl font-bold mb-6 text-gray-800">Shipping Data</h2>
-			<form onSubmit={formik.handleSubmit} className="space-y-4">
-				<div className="flex items-center md:flex-row flex-col md:gap-20 gap-5">
-					<div className="md:w-2/4 w-full">
-						<label htmlFor="userName" className="block  font-medium text-main ">
-							User Name
-						</label>
-						<input
-							id="userName"
-							name="userName"
-							type="text"
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							value={formik.values.userName}
-							className="mt-1 block w-full px-3 py-2  rounded-md focus:outline-none  "
-						/>
-						{formik.touched.userName && formik.errors.userName ? (
-							<div className="text-red-500 text-sm mt-1">
-								{formik.errors.userName}
-							</div>
-						) : null}
-					</div>
+			<form onSubmit={HandleSubmit} className="space-y-4">
+				<CardElement className="w-3/4 bg-black/10 p-3 rounded-md" />
 
-					<div className="md:w-2/4 w-full">
-						<label htmlFor="email" className="block  font-medium text-main ">
-							E-mail
-						</label>
-						<input
-							id="email"
-							name="email"
-							type="email"
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							value={formik.values.email}
-							className="mt-1 block w-full px-3 py-2  rounded-md focus:outline-none  "
-						/>
-						{formik.touched.email && formik.errors.email ? (
-							<div className="text-red-500 text-sm mt-1">
-								{formik.errors.email}
-							</div>
-						) : null}
-					</div>
-				</div>
-				<div className="flex items-center md:flex-row flex-col md:gap-20 gap-5">
-					<div className="md:w-2/4 w-full">
-						<label htmlFor="country" className="block  font-medium text-main ">
-							Country
-						</label>
-						<input
-							id="country"
-							name="country"
-							type="text"
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							value={formik.values.country}
-							className="mt-1 block w-full px-3 py-2  rounded-md focus:outline-none  "
-						/>
-						{formik.touched.country && formik.errors.country ? (
-							<div className="text-red-500 text-sm mt-1">
-								{formik.errors.country}
-							</div>
-						) : null}
-					</div>
-
-					<div className="md:w-2/4 w-full">
-						<label htmlFor="city" className="block  font-medium text-main ">
-							City
-						</label>
-						<input
-							id="city"
-							name="city"
-							type="text"
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							value={formik.values.city}
-							className="mt-1 block w-full px-3 py-2  rounded-md focus:outline-none  "
-						/>
-						{formik.touched.city && formik.errors.city ? (
-							<div className="text-red-500 text-sm mt-1">
-								{formik.errors.city}
-							</div>
-						) : null}
-					</div>
-				</div>
-				<div className="flex items-center md:flex-row flex-col md:gap-20 gap-5">
-					<div className="md:w-2/4 w-full">
-						<label htmlFor="address" className="block  font-medium text-main ">
-							Address
-						</label>
-						<input
-							id="address"
-							name="address"
-							type="text"
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							value={formik.values.address}
-							className="mt-1 block w-full px-3 py-2  rounded-md focus:outline-none  "
-						/>
-						{formik.touched.address && formik.errors.address ? (
-							<div className="text-red-500 text-sm mt-1">
-								{formik.errors.address}
-							</div>
-						) : null}
-					</div>
-
-					<div className="md:w-2/4 w-full">
-						<label
-							htmlFor="phoneNumber"
-							className="block  font-medium text-main "
-						>
-							Phone Number
-						</label>
-						<input
-							id="phoneNumber"
-							name="phoneNumber"
-							type="tel"
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							value={formik.values.phoneNumber}
-							className="mt-1 block w-full px-3 py-2  rounded-md focus:outline-none  "
-						/>
-						{formik.touched.phoneNumber && formik.errors.phoneNumber ? (
-							<div className="text-red-500 text-sm mt-1">
-								{formik.errors.phoneNumber}
-							</div>
-						) : null}
-					</div>
-				</div>
+				<AddressElement
+					// className="flex "
+					options={addressElementOptions}
+				/>
+				<button
+					type="submit"
+					disabled={isLoading}
+					className={`w-full ${
+						isLoading
+							? "bg-black/20 text-white"
+							: "bg-[#ED553B]  hover:opacity-85 transition duration-200"
+					} py-4 px-4   flex justify-center gap-3 text-white`}
+				>
+					Proceed
+					<ShoppingCart />
+				</button>
 			</form>
 		</div>
 	);

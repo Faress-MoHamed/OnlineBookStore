@@ -15,10 +15,13 @@ import CategotyListDashboard from "./pages/dashboard/Dashboard-Category/Categoty
 import ProfilePage from "./pages/Profile";
 import CheckoutPage from "./pages/CheckoutPage/CheckOutPage";
 import ContactUs from "./pages/ContactsUs";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import ConfirmOrder from "./components/ui/ConfirmOrder";
 
 function App() {
-	// const [user, setUser] = useState<string | null>(null);
-	// setUser("fares");
+	const stripe = loadStripe("pk_test_TYooMQauvdEDq54NiTphI7jx");
+
 	const routes = createBrowserRouter([
 		{
 			path: "/",
@@ -51,6 +54,10 @@ function App() {
 				{
 					path: "/checkout",
 					element: <CheckoutPage />,
+				},
+				{
+					path: "/confirmOrder",
+					element: <ConfirmOrder />,
 				},
 			],
 		},
@@ -97,7 +104,11 @@ function App() {
 			],
 		},
 	]);
-	return <RouterProvider router={routes} />;
+	return (
+		<Elements stripe={stripe}>
+			<RouterProvider router={routes} />
+		</Elements>
+	);
 }
 
 export default App;

@@ -1,18 +1,15 @@
 import { Divider } from "@mui/material";
-import { ShoppingCart } from "lucide-react";
 
 interface CartTotalCostProps {
 	subtotal: number;
 	tax: number;
 	total: number;
-	handleSubmit: (event?: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export default function CartTotalCost({
 	subtotal,
 	tax,
 	total,
-	handleSubmit,
 }: CartTotalCostProps) {
 	return (
 		<div className="flex flex-col gap-5">
@@ -42,19 +39,7 @@ export default function CartTotalCost({
 					</div>
 				</div>
 			</div>
-			<button
-				type="submit"
-				disabled={total === 0}
-				onClick={() => handleSubmit()}
-				className={`w-full ${
-					total === 0
-						? "bg-black/35 "
-						: "bg-[#ED553B]  hover:opacity-85 transition duration-200"
-				} py-4 px-4   flex justify-center gap-3 text-white`}
-			>
-				Proceed
-				<ShoppingCart />
-			</button>
+
 		</div>
 	);
 }

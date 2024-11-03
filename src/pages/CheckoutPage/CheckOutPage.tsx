@@ -1,8 +1,6 @@
 import ProductsTable from "./ProductsTable";
 import CartTotalCost from "./CartTotalCost";
 import ShippingForm from "./ShippingForm";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxhooks";
 import type { Book } from "../../components/control-bar/ControlBar.types";
 import {
@@ -11,17 +9,6 @@ import {
 	removeItemFromCart,
 } from "../../redux/slices/cartSlice";
 import toast from "react-hot-toast";
-
-const validationSchema = Yup.object({
-	userName: Yup.string().required("User Name is required"),
-	email: Yup.string()
-		.email("Invalid email address")
-		.required("Email is required"),
-	country: Yup.string().required("Country is required"),
-	city: Yup.string().required("City is required"),
-	address: Yup.string().required("Address is required"),
-	phoneNumber: Yup.string().required("Phone Number is required"),
-});
 
 export interface BookItem extends Book {
 	quantity: number;
@@ -53,21 +40,6 @@ export default function CheckoutPage() {
 	const tax = subtotal * 0.0444; // Approximately 1.6 / 36
 	const total = subtotal + tax;
 
-	const formik = useFormik({
-		initialValues: {
-			userName: "",
-			email: "",
-			country: "",
-			city: "",
-			address: "",
-			phoneNumber: "",
-		},
-		validationSchema: validationSchema,
-		onSubmit: (values) => {
-			console.log(values);
-			// Handle form submission here
-		},
-	});
 	return (
 		<div className="min-h-screen p-5 flex flex-col gap-6">
 			<div className="flex justify-between items-center md:flex-row flex-col md:gap-0 gap-6">
@@ -83,7 +55,6 @@ export default function CheckoutPage() {
 				{/**checkout card */}
 				<div className="md:w-[350px] w-full md:order-2 order-1">
 					<CartTotalCost
-						handleSubmit={formik.handleSubmit}
 						subtotal={subtotal}
 						tax={tax}
 						total={total}
@@ -91,7 +62,7 @@ export default function CheckoutPage() {
 				</div>
 			</div>
 			<div className="md:w-[70%]">
-				<ShippingForm formik={formik} />
+				<ShippingForm />
 			</div>
 		</div>
 	);
