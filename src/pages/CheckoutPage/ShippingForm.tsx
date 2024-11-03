@@ -44,7 +44,7 @@ export default function ShippingForm() {
 			if (address.complete) {
 				const { _id: CartId } = await GetMyBasket();
 				const data = {
-					token: "tok_visa",
+					token: token.id,
 					delivery_address: {
 						country: address.value.address.country,
 						city: address.value.address.city,
