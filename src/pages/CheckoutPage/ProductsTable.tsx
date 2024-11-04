@@ -2,7 +2,7 @@ import { X } from "lucide-react";
 import type { BookItem } from "./CheckOutPage";
 import { getRndInteger } from "../../utils/RandomNumber";
 import Images from "../../assets/books/ImportImages";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
 	AddItemToBasket,
 	GetMyBasket,
@@ -25,6 +25,7 @@ export default function ProductsTable({
 	onQuantityDecrease,
 	onQuantityIncrease,
 }: ProductsTableProps) {
+	const [isLoading, setIsloading] = useState(false);
 	const dispatch = useAppDispatch();
 
 	const randomInteger = useMemo(
@@ -33,6 +34,7 @@ export default function ProductsTable({
 	);
 
 	const handleConfirmToCart = async () => {
+		setIsloading(true);
 		try {
 			const { _id: basketId } = await GetMyBasket();
 			if (basketId) {
@@ -55,7 +57,10 @@ export default function ProductsTable({
 					toast.success(res.message);
 				}
 			}
+
+			setIsloading(false);
 		} catch (error) {
+			setIsloading(false);
 			console.log(error);
 		}
 	};
@@ -178,8 +183,11 @@ export default function ProductsTable({
 							Clear Cart
 						</button>
 						<button
+							disabled={isLoading}
 							onClick={handleConfirmToCart}
-							className="bg-main text-white p-2 rounded-[4px] hover:bg-main/80 transition-colors duration-200"
+							className={`${
+								isLoading ? "bg-black/20" : "bg-main hover:bg-main/80"
+							} text-white p-2 rounded-[4px]  transition-colors duration-200`}
 						>
 							Confirm This Cart
 						</button>

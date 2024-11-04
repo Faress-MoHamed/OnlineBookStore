@@ -34,8 +34,7 @@ export default function ShippingForm() {
 			return;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { token, error } = await stripe.createToken(cardElement);
+		const { error } = await stripe.createToken(cardElement);
 		const address = await AddressElement.getValue();
 		if (error) {
 			setIsLoading(false);
@@ -44,7 +43,7 @@ export default function ShippingForm() {
 			if (address.complete) {
 				const { _id: CartId } = await GetMyBasket();
 				const data = {
-					token: token.id,
+					token: "tok_visa",
 					delivery_address: {
 						country: address.value.address.country,
 						city: address.value.address.city,
