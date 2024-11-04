@@ -24,8 +24,7 @@ export default function ShippingForm() {
 
 	const products = cart.items;
 
-	const HandleClearCart = async () => {
-		const { _id: basketId } = await GetMyBasket();
+	const HandleClearCart = async (basketId: string) => {
 		try {
 			const updatedBasket = products.map((el) => {
 				return { book: el._id, quantity: 0 };
@@ -34,7 +33,7 @@ export default function ShippingForm() {
 				const res = await UpdateItemInCart({ items: updatedBasket }, basketId);
 				toast.success(res.message);
 			}
-
+			console.log("cleart");
 			dispatch(clearCart());
 		} catch (error) {
 			console.log(error);
@@ -90,7 +89,7 @@ export default function ShippingForm() {
 					const totalAmount = res.data.total;
 
 					toast.success(res.message);
-					HandleClearCart();
+					HandleClearCart(CartId);
 					navigate("/confirmOrder", {
 						state: { orderId, totalAmount },
 					});
