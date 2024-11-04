@@ -6,39 +6,20 @@ import {
 } from "@stripe/react-stripe-js";
 import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
-import { GetMyBasket, UpdateItemInCart } from "../../Api/Customer/Basket";
+import { GetMyBasket } from "../../Api/Customer/Basket";
 import { CreateOrder } from "../../Api/Customer/order";
 import { useNavigate } from "react-router-dom";
 import type { StripeAddressElementOptions } from "@stripe/stripe-js";
 import { ShoppingCart } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxhooks";
+import { useAppDispatch } from "../../redux/hooks/reduxhooks";
 import { clearCart } from "../../redux/slices/cartSlice";
 
 export default function ShippingForm() {
-	const cart = useAppSelector((state) => state.cart);
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	const stripe = useStripe();
 	const elements = useElements();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-
-	const products = cart.items;
-
-	const HandleClearCart = async (basketId: string) => {
-		try {
-			const updatedBasket = products.map((el) => {
-				return { book: el._id, quantity: 0 };
-			});
-			for (let i = 0; i < products.length; i++) {
-				const res = await UpdateItemInCart({ items: updatedBasket }, basketId);
-				toast.success(res.message);
-			}
-			console.log("cleart");
-			dispatch(clearCart());
-		} catch (error) {
-			console.log(error);
-		}
-	};
 
 	const HandleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
@@ -89,7 +70,8 @@ export default function ShippingForm() {
 					const totalAmount = res.data.total;
 
 					toast.success(res.message);
-					HandleClearCart(CartId);
+					dispatch(clearCart());
+
 					navigate("/confirmOrder", {
 						state: { orderId, totalAmount },
 					});
